@@ -136,6 +136,7 @@ class _LocationsScreenState extends State<LocationsScreen> {
                                 ListTile(
                                   leading: Image.network(
                                     _locations[index].photoUrl,
+                                    /*
                                     loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                                       if (loadingProgress == null) {
                                         // Image is fully loaded
@@ -150,6 +151,7 @@ class _LocationsScreenState extends State<LocationsScreen> {
                                         );
                                       }
                                     },
+                                   */
                                   ),
                                   title: Text(_locations[index].name),
                                   subtitle: Text('Latitude: ${_locations[index].latitude} Longitude: ${_locations[index].longitude}'),

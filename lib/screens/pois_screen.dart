@@ -16,21 +16,30 @@ class PoisScreen extends StatefulWidget {
 }
 
 class _PoisScreenState extends State<PoisScreen> {
-  late MyLocation _currentLocation = ModalRoute.of(context)!.settings.arguments as MyLocation;
+  late MyLocation _currentLocation;
   bool _isLoading = true;
+  final List<PointOfInterest> _pois = [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _currentLocation = ModalRoute.of(context)!.settings.arguments as MyLocation;
+    // Call the method to fetch POIs
+    getPOIsFromFirebase();
+  }
+
 
   bool isLiked = false;
   bool isDisliked = false;
   int numLikes = 0;
   int numDislikes = 0;
-  final List<PointOfInterest> _pois = [];
 
   void getPOIsFromFirebase() async {
     var db = FirebaseFirestore.instance;
 
     var poisCollection = db
         .collection(Collections.Locations.name)
-        .doc("Barcelona")
+        .doc(_currentLocation.name)
         .collection('POIs');
     var poisDocs = await poisCollection.get();
     for (var poiDoc in poisDocs.docs) {
@@ -48,13 +57,6 @@ class _PoisScreenState extends State<PoisScreen> {
       _isLoading = false;
     });
   }
-
-  @override
-  void initState() {
-    getPOIsFromFirebase();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,78 +68,89 @@ class _PoisScreenState extends State<PoisScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            DropdownButton(
+                items: items,
+                onChanged: onChanged
+            ),
             _isLoading
                 ? CircularProgressIndicator()
                 : Expanded(
-                  child: ListView.separated(
-                    itemCount: _pois.length,
-                    separatorBuilder: (_, __) => const Divider(thickness: 2.0),
-                    itemBuilder: (BuildContext context, int index) => Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
+                  child: _pois.isEmpty
+                      ? const Center(
+                        child: Text(
+                          'No Points of Interest available for this location.',
+                          style: TextStyle(fontSize: 18.0),
                         ),
-                        child: Column(
-                            children: <Widget>[
-                              ListTile(
-                                leading: Image.network(_pois[index].photoUrl),
-                                title: Text(_pois[index].name),
-                                subtitle: Text('Longitude: ${_pois[index].longitude} Latitude: ${_pois[index].latitude}'),
+                      )
+                      : ListView.separated(
+                          itemCount: _pois.length,
+                          separatorBuilder: (_, __) => const Divider(thickness: 2.0),
+                          itemBuilder: (BuildContext context, int index) => Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Text(_currentLocation.name,
-                                  style: TextStyle(color: Colors.black.withOpacity(0.6)),
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(isLiked ? Icons.thumb_up_alt : Icons.thumb_up_off_alt, color: Colors.black),
-                                        onPressed: () {
-                                          setState(() {
-                                            isLiked = !isLiked;
-                                          });
-                                        },
+                              child: Column(
+                                  children: <Widget>[
+                                    ListTile(
+                                      leading: Image.network(_pois[index].photoUrl),
+                                      title: Text(_pois[index].name),
+                                      subtitle: Text('Longitude: ${_pois[index].longitude} Latitude: ${_pois[index].latitude}'),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Text(_currentLocation.name,
+                                        style: TextStyle(color: Colors.black.withOpacity(0.6)),
                                       ),
-                                      Text(
-                                        '$numLikes',
-                                        style: const TextStyle(fontSize: 18),
-                                      ),
-                                      const SizedBox(width: 8), // Espaçamento entre o primeiro ícone e o texto
-                                      IconButton(
-                                        icon: Icon(isDisliked ? Icons.thumb_down_alt : Icons.thumb_down_off_alt),
-                                        onPressed: () {
-                                          setState(() {
-                                            isDisliked = !isDisliked;
-                                          });
-                                        },
-                                      ),
-                                      Text(
-                                        '$numDislikes',
-                                        style: const TextStyle(fontSize: 18),
-                                      ),
-                                    ],
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.map),
-                                    onPressed: () async {
-                                      await Navigator.pushNamed(
-                                          context,
-                                          ShowMapScreen.routeName,
-                                          arguments: _pois,
-                                      );
-                                    },
-                                  )
-                                ],
-                              )
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            IconButton(
+                                              icon: Icon(isLiked ? Icons.thumb_up_alt : Icons.thumb_up_off_alt, color: Colors.black),
+                                              onPressed: () {
+                                                setState(() {
+                                                  isLiked = !isLiked;
+                                                });
+                                              },
+                                            ),
+                                            Text(
+                                              '$numLikes',
+                                              style: const TextStyle(fontSize: 18),
+                                            ),
+                                            const SizedBox(width: 8), // Espaçamento entre o primeiro ícone e o texto
+                                            IconButton(
+                                              icon: Icon(isDisliked ? Icons.thumb_down_alt : Icons.thumb_down_off_alt),
+                                              onPressed: () {
+                                                setState(() {
+                                                  isDisliked = !isDisliked;
+                                                });
+                                              },
+                                            ),
+                                            Text(
+                                              '$numDislikes',
+                                              style: const TextStyle(fontSize: 18),
+                                            ),
+                                          ],
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.map),
+                                          onPressed: () async {
+                                            await Navigator.pushNamed(
+                                                context,
+                                                ShowMapScreen.routeName,
+                                                arguments: _pois,
+                                            );
+                                          },
+                                        )
+                                      ],
+                                    )//Row dos icons
 
-                            ]
-                        )
-                    ),
-                  ),
+                                  ]
+                              )
+                          ),
+                        ),
                 )
           ],
         ),

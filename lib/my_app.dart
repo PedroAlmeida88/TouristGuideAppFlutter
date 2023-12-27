@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tp_flutter/Screens/pois_screen.dart';
+import 'package:tp_flutter/screens/last_ten.dart';
 import 'package:tp_flutter/screens/show_map_screen.dart';
 import 'Screens/home_screen.dart';
 import 'Screens/credits_screen.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         LocationsScreen.routeName: (context) => const LocationsScreen(),
         PoisScreen.routeName: (context) => const PoisScreen(),
         ShowMapScreen.routeName: (context) => const ShowMapScreen(),
+        LastTenPoisScreen.routeName: (context) => const LastTenPoisScreen()
       },
     );
   }

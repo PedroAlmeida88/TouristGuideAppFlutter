@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:tp_flutter/Data/MyLocation.dart';
+import 'package:tp_flutter/data/MyLocation.dart';
 import 'package:tp_flutter/Screens/pois_screen.dart';
 import 'package:location/location.dart';
 import 'package:tp_flutter/utils/location/location_utlis.dart';

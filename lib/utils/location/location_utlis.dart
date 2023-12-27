@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:location/location.dart';
 
-import '../../Data/MyLocation.dart';
+import '../../data/MyLocation.dart';
 
 class LocationUtils {
   Location location = Location();

@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:tp_flutter/Data/MyLocation.dart';
-import 'package:tp_flutter/Data/PointOfInterest.dart';
+import 'package:tp_flutter/data/MyLocation.dart';
+import 'package:tp_flutter/data/PointOfInterest.dart';
 import 'package:tp_flutter/data/MyCategory.dart';
 import 'package:tp_flutter/screens/show_map_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tp_flutter/utils/shared_preferences.dart';
 
 import '../data/Collections.dart';
 
@@ -73,6 +74,7 @@ class _PoisScreenState extends State<PoisScreen> {
         MyCategory(
           catName,catDesc,catIcon
         ),
+        await sharedPrefs.getLikeInPoi(poiDoc.id)
       ));
     }
     _poisAux = List.from(_pois);
@@ -180,10 +182,16 @@ class _PoisScreenState extends State<PoisScreen> {
                                         Row(
                                           children: [
                                             IconButton(
-                                              icon: Icon(isLiked ? Icons.thumb_up_alt : Icons.thumb_up_off_alt, color: Colors.black),
+                                              icon: Icon(_pois[index].isLiked == true ? Icons.thumb_up_alt : Icons.thumb_up_off_alt, color: Colors.black),
                                               onPressed: () {
                                                 setState(() {
-                                                  isLiked = !isLiked;
+                                                    if(_pois[index].isLiked == null || _pois[index].isLiked == false) {
+                                                        _pois[index].isLiked = true;
+                                                        sharedPrefs.setLikeInPoi(_pois[index].name, true);
+                                                    } else {
+                                                      _pois[index].isLiked = null;
+                                                      sharedPrefs.removeLikeInPoi(_pois[index].name);
+                                                    }
                                                 });
                                               },
                                             ),
@@ -193,10 +201,16 @@ class _PoisScreenState extends State<PoisScreen> {
                                             ),
                                             const SizedBox(width: 8), // Espaçamento entre o primeiro ícone e o texto
                                             IconButton(
-                                              icon: Icon(isDisliked ? Icons.thumb_down_alt : Icons.thumb_down_off_alt),
+                                              icon: Icon(_pois[index].isLiked == false ? Icons.thumb_down_alt : Icons.thumb_down_off_alt),
                                               onPressed: () {
                                                 setState(() {
-                                                  isDisliked = !isDisliked;
+                                                  if(_pois[index].isLiked == null || _pois[index].isLiked == true) {
+                                                    _pois[index].isLiked = false;
+                                                    sharedPrefs.setLikeInPoi(_pois[index].name, false);
+                                                  } else {
+                                                    _pois[index].isLiked = null;
+                                                    sharedPrefs.removeLikeInPoi(_pois[index].name);
+                                                  }
                                                 });
                                               },
                                             ),
@@ -209,6 +223,10 @@ class _PoisScreenState extends State<PoisScreen> {
                                         IconButton(
                                           icon: const Icon(Icons.map),
                                           onPressed: () async {
+                                            setState(() {
+                                              sharedPrefs.setLastTenPois(_pois[index]);
+                                            });
+
                                             await Navigator.pushNamed(
                                                 context,
                                                 ShowMapScreen.routeName,

@@ -7,6 +7,7 @@ class PointOfInterest {
   final double latitude;
   final double longitude;
   final MyCategory category;
+  bool? isLiked;
 
   PointOfInterest(
     this.name,
@@ -15,5 +16,25 @@ class PointOfInterest {
     this.latitude,
     this.longitude,
     this.category,
+    this.isLiked,
   );
+
+  PointOfInterest.fromJson(Map<String, dynamic> json) :
+      name = json['name'],
+      description = json['description'],
+      photoUrl = json['photoUrl'],
+      latitude = json['latitude'],
+      longitude = json['longitude'],
+      category = MyCategory.fromJson(json['category']),
+      isLiked = json['isLiked'];
+
+  static Map<String, dynamic> toJson (PointOfInterest poi) => {
+      'name' : poi.name,
+      'description' : poi.description,
+      'photoUrl' : poi.photoUrl,
+      'latitude' : poi.latitude,
+      'longitude' : poi.longitude,
+      'category' : MyCategory.toJson(poi.category),
+      'isLiked' : poi.isLiked
+  };
 }

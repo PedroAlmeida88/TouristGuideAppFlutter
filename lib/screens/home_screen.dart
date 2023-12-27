@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tp_flutter/Screens/credits_screen.dart';
+import 'package:tp_flutter/screens/last_ten.dart';
 import 'locations_screen.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -70,6 +71,24 @@ class _MyHomePageState extends State<MyHomePage> {
                       minimumSize: const Size(200, 60),
                     ),
                     child: const Text('CreditsScreen'),
+                  )
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      var obj = await Navigator.pushNamed(
+                          context, LastTenPoisScreen.routeName
+                      );
+                      int i = obj is int ? obj : 0;
+                      setState(() {
+                        _counter = i;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(200, 60),
+                    ),
+                    child: const Text('LastTenPOIScreen'),
                   )
               ),
             ],

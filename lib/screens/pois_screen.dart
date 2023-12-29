@@ -21,7 +21,6 @@ class PoisScreen extends StatefulWidget {
 class _PoisScreenState extends State<PoisScreen> {
   late MyLocation _currentLocation;
   bool _isLoading = true;
-  bool _gotCategories = true;
   late List<PointOfInterest> _pois = [];
   late List<PointOfInterest> _poisAux = [];  //guarda uma verão da lista com todos os POIs
   int numLikes = 0;
@@ -43,6 +42,7 @@ class _PoisScreenState extends State<PoisScreen> {
   @override
   void initState() {
     getCategoriesFromFirebase();
+    updateLikes();
     super.initState();
   }
 
@@ -69,6 +69,7 @@ class _PoisScreenState extends State<PoisScreen> {
         .update({'TotalDislikes': FieldValue.increment(num)});
   }
 
+
   void updateLikes() async {
     var db = FirebaseFirestore.instance;
 
@@ -79,14 +80,16 @@ class _PoisScreenState extends State<PoisScreen> {
           .collection('POIs')
           .doc(poi.name)
           .get();
-      setState(() {
+      //setState(() {
         poi.totalLikes = poiDoc['TotalLikes'] ?? 0;
         poi.totalDislikes = poiDoc['TotalDislikes'] ?? 0;
-      });
+      //});
     }
 
-    //setState(() {});
+    setState(() {});
   }
+
+
 
 
   void getPOIsFromFirebase() async {
@@ -105,7 +108,7 @@ class _PoisScreenState extends State<PoisScreen> {
       var catIcon = categoryData?['icon']?.toString() ?? "";
       var catDesc = categoryData?['description']?.toString() ?? "";
       _pois.add(PointOfInterest(
-        poiDoc.id ?? "",
+        poiDoc.id,
         poiDoc['Description'] ?? "",
         poiDoc['PhotoUrl'] ?? "",
         poiDoc['Latitude'] ?? 0.0,
@@ -125,13 +128,15 @@ class _PoisScreenState extends State<PoisScreen> {
 
   }
 
+
+
   void getCategoriesFromFirebase() async {
     var db = FirebaseFirestore.instance;
     var collection = await db.collection(Collections.Category.name).get();
     for (var doc in collection.docs) {
       debugPrint("Doc: ${doc.id}"); // doc.data()...
       _categories.add(MyCategory(
-        doc.id ?? "",
+        doc.id,
         doc['Description'] ?? "",
         doc['Icon'] ?? "",
       ));

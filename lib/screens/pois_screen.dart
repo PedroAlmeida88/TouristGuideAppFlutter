@@ -288,7 +288,7 @@ class _PoisScreenState extends State<PoisScreen> {
                                             await Navigator.pushNamed(
                                                 context,
                                                 ShowMapScreen.routeName,
-                                                arguments: _pois,
+                                                arguments:  {'pois': _pois, 'selectedPoi': _pois[index]},
                                             );
                                           },
                                         )

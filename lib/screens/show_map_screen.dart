@@ -14,10 +14,19 @@ class ShowMapScreen extends StatefulWidget {
 }
 
 class _ShowMapState extends State<ShowMapScreen> {
-  late List<PointOfInterest> _pois = ModalRoute.of(context)!.settings.arguments as List<PointOfInterest>;
+  late List<PointOfInterest> _pois;
+  late PointOfInterest _currentPoi;
 
-  //final _mapController = MapController();
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Map<String, dynamic>? args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
 
+    if (args != null) {
+      _pois = args['pois'];
+      _currentPoi = args['selectedPoi'];
+    }
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,9 +37,9 @@ class _ShowMapState extends State<ShowMapScreen> {
       body: Stack(
         children: [
           FlutterMap(
-            options: const MapOptions(
-              initialCenter: LatLng(48.8566,  2.3522),
-              initialZoom: 4,
+            options: MapOptions(
+              initialCenter: LatLng(_currentPoi.latitude,  _currentPoi.longitude),
+              initialZoom: 12,
             ),
             children: [
               TileLayer(
@@ -39,11 +48,12 @@ class _ShowMapState extends State<ShowMapScreen> {
               ),
               MarkerLayer(
                 markers: _pois.map((poi) {
+                  Color markerColor = poi == _currentPoi ? Colors.red : Colors.black;
                   return Marker(
                     point: LatLng(poi.latitude, poi.longitude),
                     width: 80,
                     height: 80,
-                    child: Icon(Icons.location_on, color: Colors.black, size: 40),
+                    child: Icon(Icons.location_on, color: markerColor, size: 40),
                   );
                 }).toList(),
               )

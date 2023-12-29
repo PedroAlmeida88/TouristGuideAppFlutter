@@ -21,7 +21,6 @@ class PoisScreen extends StatefulWidget {
 class _PoisScreenState extends State<PoisScreen> {
   late MyLocation _currentLocation;
   bool _isLoading = true;
-  bool _gotCategories = true;
   late List<PointOfInterest> _pois = [];
   late List<PointOfInterest> _poisAux = [];  //guarda uma verão da lista com todos os POIs
   int numLikes = 0;
@@ -142,10 +141,6 @@ class _PoisScreenState extends State<PoisScreen> {
         doc['Icon'] ?? "",
       ));
     }
-
-    setState(() {
-      _gotCategories = false;
-    });
   }
 
   @override
@@ -288,7 +283,7 @@ class _PoisScreenState extends State<PoisScreen> {
                                             await Navigator.pushNamed(
                                                 context,
                                                 ShowMapScreen.routeName,
-                                                arguments: _pois,
+                                                arguments:  {'pois': _pois, 'selectedPoi': _pois[index]},
                                             );
                                           },
                                         )

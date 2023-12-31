@@ -21,11 +21,8 @@ class PoisScreen extends StatefulWidget {
 class _PoisScreenState extends State<PoisScreen> {
   late MyLocation _currentLocation;
   bool _isLoading = true;
-  bool _gotCategories = true;
   late List<PointOfInterest> _pois = [];
   late List<PointOfInterest> _poisAux = [];  //guarda uma verão da lista com todos os POIs
-  bool isLiked = false;
-  bool isDisliked = false;
   int numLikes = 0;
   int numDislikes = 0;
 
@@ -45,14 +42,59 @@ class _PoisScreenState extends State<PoisScreen> {
   @override
   void initState() {
     getCategoriesFromFirebase();
+    updateLikes();
     super.initState();
   }
+
+  void addLikeInPOI(MyLocation myLocation, PointOfInterest poi, int num) async {
+    var db = FirebaseFirestore.instance;
+
+    await db
+        .collection(Collections.Locations.name)
+        .doc(_currentLocation.name)
+        .collection('POIs')
+        .doc(poi.name)
+        .update({'TotalLikes': FieldValue.increment(num)});
+  }
+
+
+  void addDislikeInPOI(MyLocation myLocation, PointOfInterest poi, int num) async {
+    var db = FirebaseFirestore.instance;
+
+    await db
+        .collection(Collections.Locations.name)
+        .doc(_currentLocation.name)
+        .collection('POIs')
+        .doc(poi.name)
+        .update({'TotalDislikes': FieldValue.increment(num)});
+  }
+
+
+  void updateLikes() async {
+    var db = FirebaseFirestore.instance;
+
+    for (var poi in _pois) {
+      var poiDoc = await db
+          .collection(Collections.Locations.name)
+          .doc(_currentLocation.name)
+          .collection('POIs')
+          .doc(poi.name)
+          .get();
+      //setState(() {
+        poi.totalLikes = poiDoc['TotalLikes'] ?? 0;
+        poi.totalDislikes = poiDoc['TotalDislikes'] ?? 0;
+      //});
+    }
+
+    setState(() {});
+  }
+
 
 
 
   void getPOIsFromFirebase() async {
     var db = FirebaseFirestore.instance;
-
+    _pois = [];
     var poisCollection = db
         .collection(Collections.Locations.name)
         .doc(_currentLocation.name)
@@ -66,7 +108,7 @@ class _PoisScreenState extends State<PoisScreen> {
       var catIcon = categoryData?['icon']?.toString() ?? "";
       var catDesc = categoryData?['description']?.toString() ?? "";
       _pois.add(PointOfInterest(
-        poiDoc.id ?? "",
+        poiDoc.id,
         poiDoc['Description'] ?? "",
         poiDoc['PhotoUrl'] ?? "",
         poiDoc['Latitude'] ?? 0.0,
@@ -74,7 +116,9 @@ class _PoisScreenState extends State<PoisScreen> {
         MyCategory(
           catName,catDesc,catIcon
         ),
-        await sharedPrefs.getLikeInPoi(poiDoc.id)
+        await sharedPrefs.getLikeInPoi(poiDoc.id),
+        poiDoc['TotalLikes'] ?? 0,
+        poiDoc['TotalDislikes'] ?? 0
       ));
     }
     _poisAux = List.from(_pois);
@@ -84,22 +128,19 @@ class _PoisScreenState extends State<PoisScreen> {
 
   }
 
+
+
   void getCategoriesFromFirebase() async {
     var db = FirebaseFirestore.instance;
     var collection = await db.collection(Collections.Category.name).get();
     for (var doc in collection.docs) {
       debugPrint("Doc: ${doc.id}"); // doc.data()...
       _categories.add(MyCategory(
-        doc.id ?? "",
+        doc.id,
         doc['Description'] ?? "",
         doc['Icon'] ?? "",
       ));
     }
-
-    // Atualiza o estado para indicar que o carregamento está completo
-    setState(() {
-      _gotCategories = false;
-    });
   }
 
   @override
@@ -111,7 +152,7 @@ class _PoisScreenState extends State<PoisScreen> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -186,17 +227,23 @@ class _PoisScreenState extends State<PoisScreen> {
                                               onPressed: () {
                                                 setState(() {
                                                     if(_pois[index].isLiked == null || _pois[index].isLiked == false) {
+                                                        if(_pois[index].isLiked == false) {
+                                                          addDislikeInPOI(_currentLocation, _pois[index], -1);
+                                                        }
                                                         _pois[index].isLiked = true;
                                                         sharedPrefs.setLikeInPoi(_pois[index].name, true);
+                                                        addLikeInPOI(_currentLocation, _pois[index], 1);
                                                     } else {
                                                       _pois[index].isLiked = null;
                                                       sharedPrefs.removeLikeInPoi(_pois[index].name);
+                                                      addLikeInPOI(_currentLocation, _pois[index], -1);
                                                     }
+                                                    updateLikes();
                                                 });
                                               },
                                             ),
                                             Text(
-                                              '$numLikes',
+                                              '${_pois[index].totalLikes}',
                                               style: const TextStyle(fontSize: 18),
                                             ),
                                             const SizedBox(width: 8), // Espaçamento entre o primeiro ícone e o texto
@@ -205,17 +252,23 @@ class _PoisScreenState extends State<PoisScreen> {
                                               onPressed: () {
                                                 setState(() {
                                                   if(_pois[index].isLiked == null || _pois[index].isLiked == true) {
+                                                    if(_pois[index].isLiked == true) {
+                                                      addLikeInPOI(_currentLocation, _pois[index], -1);
+                                                    }
                                                     _pois[index].isLiked = false;
                                                     sharedPrefs.setLikeInPoi(_pois[index].name, false);
+                                                    addDislikeInPOI(_currentLocation, _pois[index], 1);
                                                   } else {
                                                     _pois[index].isLiked = null;
                                                     sharedPrefs.removeLikeInPoi(_pois[index].name);
+                                                    addDislikeInPOI(_currentLocation, _pois[index], -1);
                                                   }
+                                                  updateLikes();
                                                 });
                                               },
                                             ),
                                             Text(
-                                              '$numDislikes',
+                                              '${_pois[index].totalDislikes}',
                                               style: const TextStyle(fontSize: 18),
                                             ),
                                           ],
@@ -230,7 +283,7 @@ class _PoisScreenState extends State<PoisScreen> {
                                             await Navigator.pushNamed(
                                                 context,
                                                 ShowMapScreen.routeName,
-                                                arguments: _pois,
+                                                arguments:  {'pois': _pois, 'selectedPoi': _pois[index]},
                                             );
                                           },
                                         )

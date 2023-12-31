@@ -106,10 +106,9 @@ class _LocationsScreenState extends State<LocationsScreen> {
                       _locations = _locationUtils.sortByDistance(_locations);
                     });
                   },
-                  icon: Icon(Icons.location_on_rounded),
+                  icon: const Icon(Icons.location_on_rounded),
                   label: const Text('Perto de mim'),
                 ),
-
               ],
             ),
             _isLoading

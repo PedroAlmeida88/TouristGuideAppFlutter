@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tp_flutter/data/PointOfInterest.dart';
 
@@ -33,8 +32,11 @@ class SharedPrefs {
         }
 
         String poi = jsonEncode(PointOfInterest.toJson(pointOfInterest));
-        if(_lastTenPois.contains(poi)) {
-          _lastTenPois.remove(poi);
+        for(String poiaux in _lastTenPois) {
+            PointOfInterest aux = PointOfInterest.fromJson(jsonDecode(poiaux));
+            if(aux.name == pointOfInterest.name) {
+                _lastTenPois.remove(poiaux);
+            }
         }
         _lastTenPois.add(poi);
 

@@ -14,21 +14,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  Color _color = Colors.white70;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  void _decrementCounter() {
-    setState(() {
-      _counter--;
-    });
-  }
-
+  final Color _color = Colors.white70;
 
   @override
   Widget build(BuildContext context) {
@@ -59,13 +45,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     onPressed: () async {
-                      var obj = await Navigator.pushNamed(
+                      await Navigator.pushNamed(
                           context, CreditsScreen.routeName
                       );
-                      int i = obj is int ? obj : 0;
-                      setState(() {
-                        _counter = i;
-                      });
+                      //int i = obj is int ? obj : 0;
+
                     },
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(200, 60),
@@ -77,13 +61,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     onPressed: () async {
-                      var obj = await Navigator.pushNamed(
+                      await Navigator.pushNamed(
                           context, LastTenPoisScreen.routeName
                       );
-                      int i = obj is int ? obj : 0;
-                      setState(() {
-                        _counter = i;
-                      });
+                      //int i = obj is int ? obj : 0;
                     },
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(200, 60),

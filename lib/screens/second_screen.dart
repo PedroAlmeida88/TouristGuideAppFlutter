@@ -10,7 +10,7 @@ class SecondScreen extends StatefulWidget {
 }
 
 class _SecondScreenState extends State<SecondScreen> {
-  late int _counter = ModalRoute.of(context)!.settings.arguments as int;
+  late final int _counter = ModalRoute.of(context)!.settings.arguments as int;
 
   @override
   Widget build(BuildContext context) {

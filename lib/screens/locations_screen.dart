@@ -31,7 +31,7 @@ class _LocationsScreenState extends State<LocationsScreen> {
     for (var doc in collection.docs) {
       debugPrint("Doc: ${doc.id}"); // doc.data()...
       _locations.add(MyLocation(
-        doc.id ?? "",
+        doc.id,
         doc['Description'] ?? "",
         doc['PhotoUrl'] ?? "",
         doc['Latitude'] ?? 0.0,
@@ -97,8 +97,8 @@ class _LocationsScreenState extends State<LocationsScreen> {
                       _locations.sort((a,b) => a.name.compareTo(b.name));
                     });
                   },
-                  icon: Icon(Icons.abc),
-                  label:const Text('Ordem Alfabética'),
+                  icon: const Icon(Icons.abc),
+                  label:const Text('Alphabetic Order'),
                 ),
                 ElevatedButton.icon(
                   onPressed: () {
@@ -107,12 +107,12 @@ class _LocationsScreenState extends State<LocationsScreen> {
                     });
                   },
                   icon: const Icon(Icons.location_on_rounded),
-                  label: const Text('Perto de mim'),
+                  label: const Text('Close to me'),
                 ),
               ],
             ),
             _isLoading
-                ? CircularProgressIndicator()
+                ? const CircularProgressIndicator()
                 : Expanded(
                   child: ListView.separated(
                     itemCount: _locations.length,

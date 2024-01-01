@@ -61,7 +61,7 @@ class _LastTenPoisScreenState extends State<LastTenPoisScreen> {
                 )
             ),
             _isLoading
-                ? CircularProgressIndicator()
+                ? const CircularProgressIndicator()
                 : Expanded(
               child: _pois.isEmpty
                   ? const Center(
@@ -104,7 +104,7 @@ class _LastTenPoisScreenState extends State<LastTenPoisScreen> {
                                     },
                                   ),
                                   Text(
-                                    '$numLikes',
+                                    '${_pois[index].totalLikes}',
                                     style: const TextStyle(fontSize: 18),
                                   ),
                                   const SizedBox(width: 8), // Espaçamento entre o primeiro ícone e o texto
@@ -123,7 +123,7 @@ class _LastTenPoisScreenState extends State<LastTenPoisScreen> {
                                     },
                                   ),
                                   Text(
-                                    '$numDislikes',
+                                    '${_pois[index].totalDislikes}',
                                     style: const TextStyle(fontSize: 18),
                                   ),
                                 ],

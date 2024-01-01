@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tp_flutter/data/MyLocation.dart';
 import 'package:tp_flutter/data/PointOfInterest.dart';
@@ -103,7 +102,7 @@ class _PoisScreenState extends State<PoisScreen> {
     for (var poiDoc in poisDocs.docs) {
       //var categoryDoc = await poisCollection.doc(poiDoc.id).collection('Category').doc('categoryDocId').get();
       var categoryData = poiDoc.get('Category') as Map<String, dynamic>?;
-      debugPrint("Poi Doc: ${categoryData}");
+      debugPrint("Poi Doc: $categoryData");
       var catName = categoryData?['name']?.toString() ?? "";
       var catIcon = categoryData?['icon']?.toString() ?? "";
       var catDesc = categoryData?['description']?.toString() ?? "";
@@ -158,7 +157,7 @@ class _PoisScreenState extends State<PoisScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: Icon(Icons.refresh), // Adicione o ícone desejado
+                  icon: const Icon(Icons.refresh), // Adicione o ícone desejado
                   onPressed: () {
                     setState(() {
                       selectedCategory = MyCategory("", "", "");
@@ -180,7 +179,7 @@ class _PoisScreenState extends State<PoisScreen> {
                   onChanged: (MyCategory? selectedValue) {
                     setState(() {
                       selectedCategory = selectedValue ?? MyCategory("", "", "");
-                      _pois = List.from(_poisAux.where((poi) => selectedCategory.name.isEmpty || poi.category.name == selectedCategory.name));; // Adiciona esta função para atualizar a lista de POIs
+                      _pois = List.from(_poisAux.where((poi) => selectedCategory.name.isEmpty || poi.category.name == selectedCategory.name)); // Adiciona esta função para atualizar a lista de POIs
                     });
                   },
                 ),
@@ -188,7 +187,7 @@ class _PoisScreenState extends State<PoisScreen> {
               ],
             ),
             _isLoading
-                ? CircularProgressIndicator()
+                ? const CircularProgressIndicator()
                 : Expanded(
                   child: _pois.isEmpty
                       ? const Center(

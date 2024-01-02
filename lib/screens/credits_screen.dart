@@ -18,8 +18,8 @@ class Student {
 
 class _CreditsScreenState extends State<CreditsScreen> {
   final List<Student> _students = [
-    Student("Acácio Agabalayeve Coutinho", "images/jn.jpg", "2020141948"),
-    Student("José Pedro Sousa Almeida", "images/jn.jpg", "2020141980"),
+    Student("Acácio Agabalayeve Coutinho", "images/acacio.jpg", "2020141948"),
+    Student("José Pedro Sousa Almeida", "images/pedro.jpg", "2020141980"),
   ];
 
   @override

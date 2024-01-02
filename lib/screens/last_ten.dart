@@ -71,38 +71,38 @@ class _LastTenPoisScreenState extends State<LastTenPoisScreen> {
                 ),
               )
                   : ListView.separated(
-                itemCount: _pois.length,
-                separatorBuilder: (_, __) => const Divider(thickness: 2.0),
-                itemBuilder: (BuildContext context, int index) => Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: Column(
-                        children: <Widget>[
-                          ListTile(
-                            leading: Image.network(_pois[index].photoUrl),
-                            title: Text(_pois[index].name),
-                            subtitle: Text('Longitude: ${_pois[index].longitude} Latitude: ${_pois[index].latitude}'),
+                  itemCount: _pois.length,
+                      separatorBuilder: (_, __) => const Divider(thickness: 2.0),
+                      itemBuilder: (BuildContext context, int index) => Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.map),
-                                onPressed: () async {
-                                  await Navigator.pushNamed(
-                                    context,
-                                    ShowMapScreen.routeName,
-                                    arguments: _pois,
-                                  );
-                                },
-                              )
-                            ],
+                          child: Column(
+                              children: <Widget>[
+                                ListTile(
+                                  leading: Image.network(_pois[index].photoUrl),
+                                  title: Text(_pois[index].name),
+                                  subtitle: Text('Longitude: ${_pois[index].longitude} Latitude: ${_pois[index].latitude}'),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.map),
+                                      onPressed: () async {
+                                        await Navigator.pushNamed(
+                                          context,
+                                          ShowMapScreen.routeName,
+                                          arguments: _pois,
+                                        );
+                                      },
+                                    )
+                                  ],
+                                )
+                              ]
                           )
-                        ]
-                    )
-                ),
-              ),
+                      ),
+                  ),
             )
           ],
         ),

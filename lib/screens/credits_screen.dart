@@ -34,7 +34,7 @@ class _CreditsScreenState extends State<CreditsScreen> {
           mainAxisAlignment: MainAxisAlignment.start  ,
           children: [
             SizedBox(height:120, child: Image.asset("images/isec_logo.png")),
-            const Text('Departamento de Engenharia Informática e de Sistemas'),
+            const Text('Department of Computer and Systems Engineering'),
             const SizedBox(height: 20),
             const Text('Pratical Work Nº1 - Mobile Arquitecture',style: TextStyle(fontSize: 20),),
             const SizedBox(height: 20),
@@ -58,12 +58,6 @@ class _CreditsScreenState extends State<CreditsScreen> {
                 ),
               ),
             )
-
-            /*
-            ElevatedButton(
-                onPressed: () { Navigator.pop(context, _counter * 2); },
-                child: const Text('Return'))
-            */
           ],
         ),
       ),
